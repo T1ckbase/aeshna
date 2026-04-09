@@ -1,0 +1,21 @@
+.{
+    .name = .aeshna,
+    .version = "0.1.0",
+    .fingerprint = 0xdd3d076c87b562d2,
+    .minimum_zig_version = "0.15.2",
+    .dependencies = .{
+        .obs_studio = .{
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.1.1/OBS-Studio-32.1.1-Sources.tar.gz",
+            .hash = "N-V-__8AAOvrbALZ9CBnPx6eI1gyio5LXEM9K3V5GYyuOq5W",
+        },
+        .obs_windows_runtime = .{
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.1.1/OBS-Studio-32.1.1-Windows-x64.zip",
+            .hash = "N-V-__8AAAxIkBx8gL6a418z0NfT9XYYaz6eC2_tXMslIYXf",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
