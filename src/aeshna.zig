@@ -149,7 +149,7 @@ pub const Aeshna = struct {
     pub fn render(self: *Self) void {
         obs.obs_source_skip_video_filter(self.context);
 
-        const found = self.capture2() orelse {
+        const found = self.capture() orelse {
             // module.log.warn("capture skipped", .{});
             return;
         };
@@ -236,60 +236,6 @@ pub const Aeshna = struct {
     }
 
     fn capture(self: *Self) ?bool {
-        const target = obs.obs_filter_get_target(self.context) orelse return null;
-        _ = obs.obs_filter_get_parent(self.context) orelse return null;
-
-        if (!self.is_active.load(.monotonic)) return null;
-
-        // check if the cursor is showing
-
-        const source_width = obs.obs_source_get_base_width(target);
-        const source_height = obs.obs_source_get_base_height(target);
-        if (source_width == 0 or source_height == 0) return null;
-
-        if (self.capture_width > source_width or self.capture_height > source_height) return null;
-
-        obs.gs_texrender_reset(self.texrender);
-        if (!obs.gs_texrender_begin(self.texrender, source_width, source_height)) return null;
-
-        var clear_color: obs.vec4 = undefined;
-        obs.vec4_zero(&clear_color);
-        obs.gs_clear(obs.GS_CLEAR_COLOR, &clear_color, 0.0, 0);
-        obs.gs_ortho(0.0, @floatFromInt(source_width), 0.0, @floatFromInt(source_height), -100.0, 100.0);
-
-        obs.gs_blend_state_push();
-        obs.gs_blend_function(obs.GS_BLEND_ONE, obs.GS_BLEND_ZERO);
-
-        obs.obs_source_video_render(target);
-
-        obs.gs_blend_state_pop();
-        obs.gs_texrender_end(self.texrender);
-
-        if (!self.ensureStageSurface(source_width, source_height)) return null;
-
-        obs.gs_stage_texture(self.stagesurface.?, obs.gs_texrender_get_texture(self.texrender));
-
-        var data: [*c]u8 = null;
-        var linesize: u32 = 0;
-
-        if (!obs.gs_stagesurface_map(self.stagesurface.?, &data, &linesize)) return null;
-        defer obs.gs_stagesurface_unmap(self.stagesurface.?);
-
-        // ignore offsets for now
-        const start_x = (source_width - self.capture_width) / 2;
-        const start_y = (source_height - self.capture_height) / 2;
-        for (start_y..start_y + self.capture_height) |y| {
-            const row = data + y * linesize;
-            for (start_x..start_x + self.capture_width) |x| {
-                const px = row + x * 4;
-                const color = (@as(u24, px[0]) << 16) | (@as(u24, px[1]) << 8) | (@as(u24, px[2])); // BGR
-                if (color == self.mask_color) return true;
-            }
-        }
-        return false;
-    }
-
-    fn capture2(self: *Self) ?bool {
         const target = obs.obs_filter_get_target(self.context) orelse return null;
         _ = obs.obs_filter_get_parent(self.context) orelse return null;
 
