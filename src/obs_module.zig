@@ -1,3 +1,6 @@
+// Copyright (c) 2026 T1ckbase
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 const std = @import("std");
 const consts = @import("consts.zig");
 pub const obs = @cImport({
@@ -47,7 +50,7 @@ fn obs_current_module() ?*obs.obs_module_t {
 }
 
 export fn obs_module_ver() u32 {
-    return @intCast(obs.LIBOBS_API_VER);
+    return obs.LIBOBS_API_VER;
 }
 
 var obs_module_lookup: ?*obs.lookup_t = null;

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 T1ckbase
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 const std = @import("std");
 const consts = @import("src/consts.zig");
 
@@ -35,7 +38,7 @@ pub fn build(b: *std.Build) void {
     });
 
     const mod = b.addModule("obs_plugin_zig", .{
-        .root_source_file = b.path("src/root.zig"),
+        .root_source_file = b.path("src/root_new.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = true,
