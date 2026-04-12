@@ -16,8 +16,11 @@ pub const INPUT_MOUSE = 0;
 pub const INPUT_KEYBOARD = 1;
 pub const INPUT_HARDWARE = 2;
 
+pub const KEYEVENTF_EXTENDEDKEY = 0x0001;
 pub const KEYEVENTF_KEYUP = 0x0002;
+pub const KEYEVENTF_SCANCODE = 0x0008;
 pub const VK_SPACE: windows.WORD = 0x20;
+pub const MAPVK_VK_TO_VSC_EX: windows.UINT = 4;
 
 pub const MOUSEINPUT = extern struct {
     dx: windows.LONG,
@@ -52,6 +55,7 @@ const INPUT = extern struct {
 };
 
 extern "user32" fn GetCursorInfo(pci: ?*CURSORINFO) callconv(.winapi) windows.BOOL;
+extern "user32" fn MapVirtualKeyW(uCode: windows.UINT, uMapType: windows.UINT) callconv(.winapi) windows.UINT;
 extern "user32" fn SendInput(cInputs: windows.UINT, pInputs: [*]const INPUT, cbSize: c_int) callconv(.winapi) windows.UINT;
 
 pub fn isCursorShowing() !bool {
@@ -79,13 +83,26 @@ pub fn release(vk: windows.WORD) void {
 }
 
 fn sendKeyboardInput(vk: windows.WORD, flags: windows.DWORD) void {
+    const mapped = MapVirtualKeyW(@as(windows.UINT, vk), MAPVK_VK_TO_VSC_EX);
+    const scan_code: windows.WORD = @intCast(mapped & 0xFF);
+
+    var key_flags = flags;
+    if (scan_code != 0) {
+        key_flags |= KEYEVENTF_SCANCODE;
+        if ((mapped & 0xFF00) != 0) {
+            key_flags |= KEYEVENTF_EXTENDEDKEY;
+        }
+    }
+
+    const use_scan_code = (key_flags & KEYEVENTF_SCANCODE) != 0;
+
     var inputs = [1]INPUT{.{
         .type = INPUT_KEYBOARD,
         .u = .{
             .ki = .{
-                .wVk = vk,
-                .wScan = 0,
-                .dwFlags = flags,
+                .wVk = if (use_scan_code) 0 else vk,
+                .wScan = if (use_scan_code) scan_code else 0,
+                .dwFlags = key_flags,
                 .time = 0,
                 .dwExtraInfo = 0,
             },
