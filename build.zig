@@ -38,7 +38,7 @@ pub fn build(b: *std.Build) void {
     });
 
     const mod = b.addModule("obs_plugin_zig", .{
-        .root_source_file = b.path("src/root_new.zig"),
+        .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = true,
