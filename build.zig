@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const std = @import("std");
-const consts = @import("src/consts.zig");
 
+const consts = @import("src/consts.zig");
 const plugin_name = consts.plugin_name;
 
 pub fn build(b: *std.Build) void {
@@ -37,24 +37,27 @@ pub fn build(b: *std.Build) void {
         .OBS_BETA = 0,
     });
 
-    const mod = b.addModule("obs_plugin_zig", .{
+    const mod = b.createModule(.{
         .root_source_file = b.path("src/root.zig"),
+        .imports = &.{
+            .{
+                .name = "build.zig.zon",
+                .module = b.createModule(.{
+                    .root_source_file = b.path("build.zig.zon"),
+                    .target = target,
+                    .optimize = optimize,
+                }),
+            },
+        },
         .target = target,
         .optimize = optimize,
-        .link_libc = true,
         .strip = optimize != .Debug,
+        .link_libc = true,
     });
     mod.addIncludePath(obs_dep.path("libobs"));
     mod.addConfigHeader(obs_config);
     mod.addLibraryPath(obs_rt.path("bin/64bit"));
     mod.linkSystemLibrary("obs", .{});
-
-    const build_zig_zon = b.createModule(.{
-        .root_source_file = b.path("build.zig.zon"),
-        .target = target,
-        .optimize = optimize,
-    });
-    mod.addImport("build.zig.zon", build_zig_zon);
 
     const plugin = b.addLibrary(.{
         .name = plugin_name,

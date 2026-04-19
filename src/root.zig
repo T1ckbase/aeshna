@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const std = @import("std");
+
 const manifest = @import("build.zig.zon");
+
+const Aeshna = @import("Aeshna.zig");
 const module = @import("obs_module.zig");
 const obs = module.obs;
-const aeshna = @import("aeshna.zig");
-
-const Aeshna = aeshna.Aeshna;
 
 fn aeshna_filter_get_name(_: ?*anyopaque) callconv(.c) [*c]const u8 {
     return "Aeshna";

@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 const std = @import("std");
+
 const consts = @import("consts.zig");
+
 pub const obs = @cImport({
     @cInclude("obs-module.h");
     @cInclude("util/base.h");
