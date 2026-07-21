@@ -4,12 +4,20 @@
 const std = @import("std");
 const windows = std.os.windows;
 
+const BOOL = c_int;
+const TRUE = 1;
+const FALSE = 0;
+const POINT = extern struct {
+    x: windows.LONG,
+    y: windows.LONG,
+};
+
 pub const CURSOR_SHOWING = 0x00000001;
 pub const CURSORINFO = extern struct {
     cbSize: windows.DWORD,
     flags: windows.DWORD,
     hCursor: windows.HCURSOR,
-    ptScreenPos: windows.POINT,
+    ptScreenPos: POINT,
 };
 
 pub const INPUT_MOUSE = 0;
@@ -54,7 +62,7 @@ const INPUT = extern struct {
     },
 };
 
-extern "user32" fn GetCursorInfo(pci: ?*CURSORINFO) callconv(.winapi) windows.BOOL;
+extern "user32" fn GetCursorInfo(pci: ?*CURSORINFO) callconv(.winapi) BOOL;
 extern "user32" fn MapVirtualKeyW(uCode: windows.UINT, uMapType: windows.UINT) callconv(.winapi) windows.UINT;
 extern "user32" fn SendInput(cInputs: windows.UINT, pInputs: [*]const INPUT, cbSize: c_int) callconv(.winapi) windows.UINT;
 
@@ -62,7 +70,7 @@ pub fn isCursorShowing() !bool {
     var ci: CURSORINFO = undefined;
     ci.cbSize = @sizeOf(CURSORINFO);
 
-    if (GetCursorInfo(&ci) == windows.FALSE) {
+    if (GetCursorInfo(&ci) == FALSE) {
         return windows.unexpectedError(windows.GetLastError());
     }
 
@@ -75,39 +83,41 @@ pub fn isCursorShowing() !bool {
 // }
 
 pub fn press(vk: windows.WORD) void {
-    sendKeyboardInput(vk, 0);
+    _ = vk;
+    // sendKeyboardInput(vk, 0);
 }
 
 pub fn release(vk: windows.WORD) void {
-    sendKeyboardInput(vk, KEYEVENTF_KEYUP);
+    _ = vk;
+    // sendKeyboardInput(vk, KEYEVENTF_KEYUP);
 }
 
-fn sendKeyboardInput(vk: windows.WORD, flags: windows.DWORD) void {
-    const mapped = MapVirtualKeyW(@as(windows.UINT, vk), MAPVK_VK_TO_VSC_EX);
-    const scan_code: windows.WORD = @intCast(mapped & 0xFF);
-
-    var key_flags = flags;
-    if (scan_code != 0) {
-        key_flags |= KEYEVENTF_SCANCODE;
-        if ((mapped & 0xFF00) != 0) {
-            key_flags |= KEYEVENTF_EXTENDEDKEY;
-        }
-    }
-
-    const use_scan_code = (key_flags & KEYEVENTF_SCANCODE) != 0;
-
-    var inputs = [1]INPUT{.{
-        .type = INPUT_KEYBOARD,
-        .u = .{
-            .ki = .{
-                .wVk = if (use_scan_code) 0 else vk,
-                .wScan = if (use_scan_code) scan_code else 0,
-                .dwFlags = key_flags,
-                .time = 0,
-                .dwExtraInfo = 0,
-            },
-        },
-    }};
-
-    _ = SendInput(1, &inputs, @sizeOf(INPUT));
-}
+// fn sendKeyboardInput(vk: windows.WORD, flags: windows.DWORD) void {
+//     const mapped = MapVirtualKeyW(@as(windows.UINT, vk), MAPVK_VK_TO_VSC_EX);
+//     const scan_code: windows.WORD = @intCast(mapped & 0xFF);
+//
+//     var key_flags = flags;
+//     if (scan_code != 0) {
+//         key_flags |= KEYEVENTF_SCANCODE;
+//         if ((mapped & 0xFF00) != 0) {
+//             key_flags |= KEYEVENTF_EXTENDEDKEY;
+//         }
+//     }
+//
+//     const use_scan_code = (key_flags & KEYEVENTF_SCANCODE) != 0;
+//
+//     var inputs = [1]INPUT{.{
+//         .type = INPUT_KEYBOARD,
+//         .u = .{
+//             .ki = .{
+//                 .wVk = if (use_scan_code) 0 else vk,
+//                 .wScan = if (use_scan_code) scan_code else 0,
+//                 .dwFlags = key_flags,
+//                 .time = 0,
+//                 .dwExtraInfo = 0,
+//             },
+//         },
+//     }};
+//
+//     _ = SendInput(1, &inputs, @sizeOf(INPUT));
+// }

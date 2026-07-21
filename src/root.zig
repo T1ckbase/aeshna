@@ -9,6 +9,10 @@ const Aeshna = @import("Aeshna.zig");
 const module = @import("obs_module.zig");
 const obs = module.obs;
 
+// pub const std_options: std.Options = .{
+//     .logFn =
+// };
+
 fn aeshna_filter_get_name(_: ?*anyopaque) callconv(.c) [*c]const u8 {
     return "Aeshna";
 }
@@ -55,7 +59,7 @@ fn aeshna_filter_render(data: ?*anyopaque, _: ?*obs.gs_effect_t) callconv(.c) vo
     filter.render();
 }
 
-const aeshna_filter = obs.obs_source_info{
+const aeshna_filter = std.mem.zeroInit(obs.obs_source_info, .{
     .id = "aeshna_filter",
     .type = obs.OBS_SOURCE_TYPE_FILTER,
     .output_flags = obs.OBS_SOURCE_VIDEO | obs.OBS_SOURCE_DO_NOT_DUPLICATE,
@@ -67,7 +71,7 @@ const aeshna_filter = obs.obs_source_info{
     .get_properties = aeshna_filter_properties,
     .video_tick = aeshna_filter_tick,
     .video_render = aeshna_filter_render,
-};
+});
 
 export fn obs_module_load() bool {
     module.log.info("plugin loaded successfully (version {s})", .{manifest.version});

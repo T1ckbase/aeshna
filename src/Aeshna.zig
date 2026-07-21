@@ -6,7 +6,7 @@ const module = @import("obs_module.zig");
 const obs = module.obs;
 const utils = @import("utils.zig");
 
-const Self = @This();
+const Aeshna = @This();
 
 mask_color: u24,
 virtual_key_code: u16,
@@ -30,9 +30,9 @@ stagesurface: ?*obs.gs_stagesurf_t,
 stage_width: u32,
 stage_height: u32,
 
-pub fn create(context: *obs.obs_source_t) ?*Self {
-    const ptr = obs.bzalloc(@sizeOf(Self)).?;
-    const filter: *Self = @ptrCast(@alignCast(ptr));
+pub fn create(context: *obs.obs_source_t) ?*Aeshna {
+    const ptr = obs.bzalloc(@sizeOf(Aeshna)).?;
+    const filter: *Aeshna = @ptrCast(@alignCast(ptr));
 
     obs.obs_enter_graphics();
     defer obs.obs_leave_graphics();
@@ -70,7 +70,7 @@ pub fn create(context: *obs.obs_source_t) ?*Self {
     return filter;
 }
 
-pub fn update(self: *Self, settings: *obs.obs_data_t) void {
+pub fn update(self: *Aeshna, settings: *obs.obs_data_t) void {
     const mask_bits: u64 = @bitCast(obs.obs_data_get_int(settings, "mask_color"));
     self.mask_color = @truncate(mask_bits & 0x00ffffff);
 
@@ -91,7 +91,7 @@ pub fn update(self: *Self, settings: *obs.obs_data_t) void {
     // self.capture_offset_y = @intCast(std.math.clamp(capture_offset_y, -2048, 2048));
 }
 
-pub fn destroy(self: *Self) void {
+pub fn destroy(self: *Aeshna) void {
     if (self.activate_hotkey_id != obs.OBS_INVALID_HOTKEY_ID) {
         obs.obs_hotkey_unregister(self.activate_hotkey_id);
     }
@@ -140,12 +140,12 @@ pub fn properties() *obs.obs_properties_t {
     return props;
 }
 
-pub fn tick(self: *Self) void {
+pub fn tick(self: *Aeshna) void {
     self.tryRegisterHotkeys();
     self.processPendingRelease();
 }
 
-pub fn render(self: *Self) void {
+pub fn render(self: *Aeshna) void {
     obs.obs_source_skip_video_filter(self.context);
 
     const found = self.capture() orelse {
@@ -158,7 +158,7 @@ pub fn render(self: *Self) void {
     }
 }
 
-fn tryPress(self: *Self) void {
+fn tryPress(self: *Aeshna) void {
     const now: u64 = @intCast(obs.os_gettime_ns());
 
     if (self.is_pressing) return;
@@ -181,7 +181,7 @@ fn tryPress(self: *Self) void {
     }
 }
 
-fn processPendingRelease(self: *Self) void {
+fn processPendingRelease(self: *Aeshna) void {
     if (!self.is_pressing) return;
 
     const now: u64 = @intCast(obs.os_gettime_ns());
@@ -193,11 +193,11 @@ fn processPendingRelease(self: *Self) void {
 }
 
 fn activateHotkeyHandler(data: ?*anyopaque, _: obs.obs_hotkey_id, _: ?*obs.obs_hotkey_t, pressed: bool) callconv(.c) void {
-    const self: *Self = @ptrCast(@alignCast(data orelse return));
+    const self: *Aeshna = @ptrCast(@alignCast(data orelse return));
     self.is_active.store(pressed, .monotonic);
 }
 
-fn tryRegisterHotkeys(self: *Self) void {
+fn tryRegisterHotkeys(self: *Aeshna) void {
     if (self.hotkeys_loaded) return;
 
     const parent = obs.obs_filter_get_parent(self.context) orelse return;
@@ -212,7 +212,7 @@ fn tryRegisterHotkeys(self: *Self) void {
     self.hotkeys_loaded = true;
 }
 
-fn ensureStageSurface(self: *Self, source_width: u32, source_height: u32) bool {
+fn ensureStageSurface(self: *Aeshna, source_width: u32, source_height: u32) bool {
     if (self.stagesurface != null and self.stage_width == source_width and self.stage_height == source_height) {
         return true;
     }
@@ -234,7 +234,7 @@ fn ensureStageSurface(self: *Self, source_width: u32, source_height: u32) bool {
     return true;
 }
 
-fn capture(self: *Self) ?bool {
+fn capture(self: *Aeshna) ?bool {
     const target = obs.obs_filter_get_target(self.context) orelse return null;
     _ = obs.obs_filter_get_parent(self.context) orelse return null;
 

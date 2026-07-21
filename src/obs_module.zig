@@ -5,11 +5,13 @@ const std = @import("std");
 
 const consts = @import("consts.zig");
 
-pub const obs = @cImport({
-    @cInclude("obs-module.h");
-    @cInclude("util/base.h");
-    @cInclude("util/platform.h");
-});
+// pub const obs = @cImport({
+//     @cInclude("obs-module.h");
+//     @cInclude("util/base.h");
+//     @cInclude("util/platform.h");
+// });
+
+pub const obs = @import("obs");
 
 pub const log = struct {
     pub fn info(comptime fmt: []const u8, args: anytype) void {
@@ -26,18 +28,24 @@ pub const log = struct {
     }
 
     fn logImpl(comptime level: c_int, comptime fmt: []const u8, args: anytype) void {
-        var buf: [8192]u8 = undefined;
+        _ = level; // autofix
+        _ = fmt; // autofix
+        _ = args; // autofix
 
-        var fbs = std.io.fixedBufferStream(buf[0 .. buf.len - 1]);
-        fbs.writer().print("[" ++ consts.plugin_name ++ "] " ++ fmt, args) catch |e| switch (e) {
-            error.NoSpaceLeft => {},
-            else => return,
-        };
+        // std.fmt.bufPrint ?
 
-        const written = fbs.getWritten();
-        buf[written.len] = 0;
-        const msg = buf[0..written.len :0];
-        obs.blog(level, "%s", msg.ptr);
+        // var buf: [8192]u8 = undefined;
+        //
+        // var fbs = std.io.fixedBufferStream(buf[0 .. buf.len - 1]);
+        // fbs.writer().print("[" ++ consts.plugin_name ++ "] " ++ fmt, args) catch |e| switch (e) {
+        //     error.NoSpaceLeft => {},
+        //     else => return,
+        // };
+        //
+        // const written = fbs.getWritten();
+        // buf[written.len] = 0;
+        // const msg = buf[0..written.len :0];
+        // obs.blog(level, "%s", msg.ptr);
     }
 };
 
