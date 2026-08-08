@@ -8,12 +8,12 @@
     .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .obs_studio = .{
-            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.0/OBS-Studio-32.2.0-Sources.tar.gz",
-            .hash = "N-V-__8AAJlRcAIdm3_mBmrgf-XP-lTpS1KDDWZ6Zgnxx_Ys",
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.1/OBS-Studio-32.2.1-Sources.tar.gz",
+            .hash = "N-V-__8AAEpWcAIFPUXjAZvnxmLec1x9DxTHodjiSULDlZnc",
         },
         .obs_studio_windows = .{
-            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.0/OBS-Studio-32.2.0-Windows-x64.zip",
-            .hash = "N-V-__8AANs_Hx34aK1taP0zLr8GQ3TNSiI5tD4uRpUxgbVf",
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.1/OBS-Studio-32.2.1-Windows-x64.zip",
+            .hash = "N-V-__8AANtDHx2_0zyNxtdpmqhm93-qDiOXhH9GH1vePzA4",
         },
     },
     .paths = .{

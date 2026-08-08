@@ -4,15 +4,17 @@
 const std = @import("std");
 const windows = std.os.windows;
 
-pub const WORD = u16;
-pub const DWORD = u32;
-pub const UINT = c_uint;
+pub const WORD = windows.WORD;
+pub const DWORD = windows.DWORD;
+pub const UINT = windows.UINT;
 
-pub const TRUE = 1;
-pub const FALSE = 0;
+pub const TRUE = windows.TRUE;
+pub const FALSE = windows.FALSE;
 
 pub const GetLastError = windows.GetLastError;
 pub const unexpectedError = windows.unexpectedError;
+
+pub const Win32Error = windows.Win32Error;
 
 pub const CURSOR_SHOWING = 0x00000001;
 pub const CURSORINFO = extern struct {

@@ -23,8 +23,8 @@ pub fn build(b: *std.Build) void {
     //     });
     // }
 
-    const obs = b.dependency("obs_studio", .{});
-    const obs_windows = b.dependency("obs_studio_windows", .{});
+    const obs_studio = b.dependency("obs_studio", .{});
+    const obs_studio_windows = b.dependency("obs_studio_windows", .{});
 
     const obs_config = b.addConfigHeader(.{
         .style = .blank,
@@ -47,7 +47,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    translate_c.addIncludePath(obs.path("libobs"));
+    translate_c.addIncludePath(obs_studio.path("libobs"));
     translate_c.addConfigHeader(obs_config);
 
     const mod = b.createModule(.{
@@ -73,7 +73,7 @@ pub fn build(b: *std.Build) void {
     });
     // mod.addIncludePath(obs.path("libobs"));
     // mod.addConfigHeader(obs_config);
-    mod.addLibraryPath(obs_windows.path("bin/64bit"));
+    mod.addLibraryPath(obs_studio_windows.path("bin/64bit"));
     mod.linkSystemLibrary("obs", .{});
 
     const plugin = b.addLibrary(.{
@@ -91,11 +91,11 @@ pub fn build(b: *std.Build) void {
     });
 
     const plugin_check = b.addLibrary(.{
-        .name = name,
+        .name = "check",
         .root_module = mod,
         .linkage = .dynamic,
     });
 
-    const check_step = b.step("check", "Check if plugin compiles");
+    const check_step = b.step("check", "Check if code compiles");
     check_step.dependOn(&plugin_check.step);
 }
