@@ -5,19 +5,19 @@
     .name = .aeshna,
     .version = "0.1.0",
     .fingerprint = 0xdd3d076c87b562d2,
-    .minimum_zig_version = "0.17.0-dev.1426+58a94eaae",
+    .minimum_zig_version = "0.17.0",
     .dependencies = .{
         .obs_studio = .{
-            .url = "https://github.com/obsproject/obs-studio/releases/download/32.1.2/OBS-Studio-32.1.2-Sources.tar.gz",
-            .hash = "N-V-__8AAGN2bQLjR4KpC9bwZvWHgh5G4I9B2VKe8oFnO4hI",
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.2/OBS-Studio-32.2.2-Sources.tar.gz",
+            .hash = "N-V-__8AANFTcAK4JXOfd2moGiAQpBfgQG8srY-Yr2tVPM0t",
         },
         .obs_windows = .{
-            .url = "https://github.com/obsproject/obs-studio/releases/download/32.1.2/OBS-Studio-32.1.2-Windows-x64.zip",
-            .hash = "N-V-__8AAFRfkByYoJOmq1XDxEil0OYte1OMXsYecT4Tpbk4",
+            .url = "https://github.com/obsproject/obs-studio/releases/download/32.2.2/OBS-Studio-32.2.2-Windows-x64.zip",
+            .hash = "N-V-__8AANsfHx39O1l7-j28xl9W7jeiz7Ny0A-XbcldRLiN",
         },
         .translate_c = .{
-            .url = "git+https://codeberg.org/ziglang/translate-c#fdf7dc05aaec07c5c0f0a4bfe060acf7e483f4a3",
-            .hash = "translate_c-0.0.0-Q_BUWvo6BwAVl3qDhMeQNrgCAljvDeGUnwqpnGvB0_YM",
+            .url = "git+https://codeberg.org/ziglang/translate-c?ref=zig-0.17.x#02ff0c523fb92a38939b04d0145c4a9602a74d56",
+            .hash = "translate_c-2.0.0-Q_BUWltOBwBYABF84EUL208pIFeUIwbBs29FmVBaafN5",
         },
     },
     .paths = .{

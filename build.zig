@@ -72,7 +72,7 @@ pub fn build(b: *std.Build) void {
         },
         .target = target,
         .optimize = optimize,
-        .strip = optimize != .Debug,
+        // .strip = optimize != .Debug,
         // .link_libc = true,
     });
     // mod.addIncludePath(obs.path("libobs"));
@@ -100,6 +100,6 @@ pub fn build(b: *std.Build) void {
         .linkage = .dynamic,
     });
 
-    const check_step = b.step("check", "Check if plugin compiles");
+    const check_step = b.step("check", "Check if code compiles");
     check_step.dependOn(&plugin_check.step);
 }

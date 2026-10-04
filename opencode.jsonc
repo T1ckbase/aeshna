@@ -1,15 +1,20 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "references": {
-    "obsproject/obs-studio": {
+    "obs-studio": {
       "repository": "obsproject/obs-studio",
-      "branch": "32.1.2",
-      "description": "OBS Studio - Free and open source software for live streaming and screen recording"
+      "branch": "32.2.2",
+      "description": "Free and open source software for live streaming and screen recording"
     },
     "zig": {
       "repository": "codeberg.org/ziglang/zig",
-      "branch": "master",
-      "description": "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software"
+      "branch": "0.17.0",
+      "description": "Zig 0.17.0"
+    },
+    "translate-c": {
+      "repository": "codeberg.org/ziglang/translate-c",
+      "branch": "zig-0.17.x",
+      "description": "A Zig package for translating C code into Zig code"
     }
   }
 }
